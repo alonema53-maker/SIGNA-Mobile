@@ -1,0 +1,24 @@
+kind = "mobile"
+previewPath = "/signa-mobile/"
+title = "SIGNA Mobile Test"
+description = "A test Android WebView app that loads the existing SIGNA web interface from its online server without rebuilding or changing the frontend or backend."
+version = "1.0.0"
+id = "artifacts/signa-mobile"
+router = "expo-domain"
+
+[[services]]
+name = "expo"
+ensurePreviewReachable = "/status"
+paths = [ "/signa-mobile/" ]
+localPort = 23497
+
+[services.development]
+run = "pnpm --filter @workspace/signa-mobile run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/signa-mobile", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/signa-mobile", "run", "serve" ]
+
+[services.env]
+PORT = "23497"
+BASE_PATH = "/signa-mobile/"
