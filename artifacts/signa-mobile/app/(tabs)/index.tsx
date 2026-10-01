@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   BackHandler,
+  Linking,
   Platform,
   Pressable,
   StyleSheet,
@@ -50,6 +51,51 @@ export default function SignaWebViewScreen() {
     setIsLoading(true);
     webViewRef.current?.reload();
   }, []);
+
+  if (Platform.OS === 'web') {
+    return (
+      <SafeAreaView
+        style={[
+          styles.screen,
+          styles.webPreviewSafeArea,
+          { backgroundColor: colors.background },
+        ]}
+        edges={[]}
+      >
+        <StatusBar style="dark" />
+        <View style={styles.webPreview}>
+          <Ionicons
+            name="phone-portrait-outline"
+            size={34}
+            color={colors.primary}
+          />
+          <Text style={[styles.previewTitle, { color: colors.foreground }]}>
+            Android WebView test
+          </Text>
+          <Text style={[styles.previewMessage, { color: colors.mutedForeground }]}>
+            SIGNA runs inside the Android app. This secure browser preview can’t
+            embed the site’s HTTP address.
+          </Text>
+          <Pressable
+            testID="open-signa-in-browser"
+            accessibilityRole="link"
+            onPress={() => {
+              void Linking.openURL(SIGNA_URL);
+            }}
+            style={({ pressed }) => [
+              styles.retryButton,
+              { backgroundColor: colors.primary, opacity: pressed ? 0.78 : 1 },
+            ]}
+          >
+            <Ionicons name="open-outline" size={18} color={colors.primaryForeground} />
+            <Text style={[styles.retryText, { color: colors.primaryForeground }]}>
+              Open SIGNA in browser
+            </Text>
+          </Pressable>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView
@@ -128,6 +174,29 @@ export default function SignaWebViewScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+  },
+  webPreviewSafeArea: {
+    paddingTop: 67,
+    paddingBottom: 34,
+  },
+  webPreview: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 28,
+  },
+  previewTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  previewMessage: {
+    fontSize: 15,
+    lineHeight: 22,
+    marginTop: 10,
+    maxWidth: 340,
+    textAlign: 'center',
   },
   webView: {
     flex: 1,
